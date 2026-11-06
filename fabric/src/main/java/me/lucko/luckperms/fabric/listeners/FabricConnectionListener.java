@@ -140,7 +140,9 @@ public class FabricConnectionListener extends AbstractConnectionListener {
     }
 
     private void onDisconnect(ServerPlayNetworkHandler netHandler, MinecraftServer server) {
-        handleDisconnect(netHandler.player.getUuid());
+        if (!server.isStopped()) {
+            handleDisconnect(netHandler.player.getUuid());
+        }
     }
 
 }
