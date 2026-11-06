@@ -23,20 +23,29 @@
  *  SOFTWARE.
  */
 
-package me.lucko.luckperms.fabric.event;
+package me.lucko.luckperms.neoforge.calculator;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
+import me.lucko.luckperms.common.cacheddata.result.TristateResult;
+import me.lucko.luckperms.common.calculator.processor.AbstractPermissionProcessor;
+import me.lucko.luckperms.common.calculator.processor.PermissionProcessor;
+import net.luckperms.api.util.Tristate;
 
-// TODO: Use Fabric API alternative when merged.
-public interface PlayerChangeWorldCallback {
-    Event<PlayerChangeWorldCallback> EVENT = EventFactory.createArrayBacked(PlayerChangeWorldCallback.class, callbacks -> (originalWorld, destination, player) -> {
-        for (PlayerChangeWorldCallback callback : callbacks) {
-            callback.onChangeWorld(originalWorld, destination, player);
-        }
-    });
+/**
+ * Permission processor which is added to the owner of an Integrated server to
+ * simply return true if no other processors match.
+ */
+public class ServerOwnerProcessor extends AbstractPermissionProcessor implements PermissionProcessor {
+    private static final TristateResult TRUE_RESULT = new TristateResult.Factory(ServerOwnerProcessor.class).result(Tristate.TRUE);
 
-    void onChangeWorld(ServerWorld originalWorld, ServerWorld destination, ServerPlayerEntity player);
+    public static final ServerOwnerProcessor INSTANCE = new ServerOwnerProcessor();
+
+    private ServerOwnerProcessor() {
+
+    }
+
+    @Override
+    public TristateResult hasPermission(String permission) {
+        return TRUE_RESULT;
+    }
+
 }
